@@ -1,0 +1,47 @@
+from django.db import models
+from opstmt.models import Company, Year
+
+class WcTl(models.Model):
+    year = models.OneToOneField(Year, on_delete=models.CASCADE, related_name='wctl')
+    Raw_Materials = models.FloatField(default=0)
+    months_consumption = models.FloatField(default=0)
+    stock_in_process = models.FloatField(default=0)
+    months_cost_of_production = models.FloatField(default=0)
+    finished_goods = models.FloatField(default=0)
+    months_cost_of_sales = models.FloatField(default=0)
+    other_consumable_spares = models.FloatField(default=0)
+    months_consumption_cs = models.FloatField(default=0)
+    TOTAL_INVENTORY = models.FloatField(default=0)
+    RECEIVABLES = models.FloatField(default=0)
+    months_gross_sales = models.FloatField(default=0)
+    other_current_assets = models.FloatField(default=0)
+    TOTAL_CHARGEABLE_CA = models.FloatField(default=0)
+
+    # CL OTHER THAN BANK BORROWINGS
+    TRADE_CREDITORS = models.FloatField(default=0)
+    months_purchases = models.FloatField(default=0)
+    other_current_liabilities = models.FloatField(default=0)
+    TOTAL_LIABILITIES = models.FloatField(default=0)
+    Working_Capital_Gap_A = models.FloatField(default=0)
+    twenrtfive_percent_Margin_on_C_A_B = models.FloatField(default=0)
+    Actual_and_Projected_N_W_C = models.FloatField(default=0)
+    A_B_I = models.FloatField(default=0)
+    A_C_II = models.FloatField(default=0)
+    MPBF_Lower_of_I_or_II = models.FloatField(default=0)
+    excess_borrowings_representing = models.FloatField(default=0)
+    Shortfall_in_NWC = models.FloatField(default=0)
+
+    # FIXED ASSETS Margin of Security
+    Gross_Fixed_Assets = models.FloatField(default=0)
+    WDV_of_Fixed_Assets = models.FloatField(default=0)
+    Term_Loan_O_and_s = models.FloatField(default=0)
+    Gross_Fixed_Assets_and_Term_Loan_O_and_s = models.FloatField(default=0)
+    Margin = models.FloatField(default=0)
+    Security_Margin = models.FloatField(default=0)
+    Average_Security_Margin = models.FloatField(default=0)
+    Fixed_Asset_Coverage_Ratio = models.FloatField(default=0)
+    IF_Cash_accrual_TL_Installment = models.FloatField(default=0)
+    Cash_Accrual = models.FloatField(default=0)
+    TL_Installment = models.FloatField(default=0)
+    Difference = models.FloatField(default=0)
+    Net_DSCR = models.FloatField(default=0)

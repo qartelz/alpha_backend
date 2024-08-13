@@ -1,0 +1,53 @@
+from django.db import models
+from opstmt.models import Year, Company
+
+# Create your models here.
+class AssetnLiabs(models.Model):
+    year = models.OneToOneField(Year, on_delete=models.CASCADE, related_name='assetnliabs')
+
+    closingStockRM = models.FloatField(default=0)
+    closingStockWIP = models.FloatField(default=0)
+    closingStockFinishedGoods = models.FloatField(default=0)
+    consumableSpares = models.FloatField(default=0)
+    tradeDebtors6 = models.FloatField(default=0)
+    otherCurrentAssets = models.FloatField(default=0)
+    totalCurrentAssets = models.FloatField(default=0)
+    fixedAssets = models.FloatField(default=0)
+    landBuilding = models.FloatField(default=0)
+    plantMachinery = models.FloatField(default=0)
+    furnitureFixturesSundries = models.FloatField(default=0)
+    capitalWorkInProgress = models.FloatField(default=0)
+    grossBlock = models.FloatField(default=0)
+    lessDepreciation = models.FloatField(default=0)
+    netFixedAssets = models.FloatField(default=0)
+    nonCurrentAssets = models.FloatField(default=0)
+    investmtLoanToAssociate = models.FloatField(default=0)
+    otherNonCurrentAssets = models.FloatField(default=0)
+    totalNca = models.FloatField(default=0)
+    intangibleAssets = models.FloatField(default=0)
+    expensesNotWrittenOff = models.FloatField(default=0)
+    profitLossAc = models.FloatField(default=0)
+    deferedRevenueExpenditure = models.FloatField(default=0)
+    totalIa = models.FloatField(default=0)
+    totalAssets = models.FloatField(default=0)
+    wcBorrowingsFromIob = models.FloatField(default=0)
+    wcFromBanksInstitution = models.FloatField(default=0)
+    sundryCreditorsTrade = models.FloatField(default=0)
+    otherCurrentLiab = models.FloatField(default=0)
+    totalCurrentLiab = models.FloatField(default=0)
+    termLoanIob = models.FloatField(default=0)
+    termLoanOtherBanks = models.FloatField(default=0)
+    termLoanInstitution = models.FloatField(default=0)
+    otherLongTermLiab = models.FloatField(default=0)
+    longTermLiab = models.FloatField(default=0)
+    totalOutsideLiab = models.FloatField(default=0)
+    paidUpCapital = models.FloatField(default=0)
+    reservesSurplus = models.FloatField(default=0)
+    profitLossAcc = models.FloatField(default=0)
+    netWorth = models.FloatField(default=0)
+    totalLiab = models.FloatField(default=0)
+    differenceIfAny = models.FloatField(default=0)
+    wheatherAssetsLiabTallied = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.year.year} Asset and Liabilities'
