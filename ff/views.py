@@ -21,11 +21,49 @@ from .serializers import FFSerializer, CompanyFFSerializer
 class GetFFView(APIView):
     def get(self, request, company_id):
         company = Company.objects.get(id=company_id)
-        years = company.years.all()
-        # for year in years:
-        #     kfi_calculations(year.id)
+        years = company.years.exclude(year=2020)
+        for year in years:
+            ff_calculations(year.id)
         return Response(CompanyFFSerializer(years, many=True).data)
 
+
+class UpdateFFView(APIView):
+    def post(self, request, company_id):
+        try:
+            company = Company.objects.get(id=company_id)
+        except Company.DoesNotExist:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_404_NOT_FOUND)
+
+        companies_data = request.data
+
+        for company_data in companies_data:
+            # Retrieve the company instance
+            try:
+                year = Year.objects.get(id=company_data['id'])
+            except Company.DoesNotExist:
+                return Response({'error': f'Company with id {company_data["id"]} does not exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            # Check if the token is authorized to update this company
+            if year.company != company:
+                return Response({'error': 'Unauthorized to update this company'}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Retrieve the metrics data
+            ff_data = company_data.get('metrics')
+            if not ff_data:
+                return Response({'error': 'Missing metrics data'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Retrieve the opstmt instance associated with the company
+            ff = year.ff
+
+            # Deserialize and validate the opstmt data
+            serializer = FFSerializer(ff, data=ff_data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'status': 'success', 'companies': request.data}, status=status.HTTP_200_OK)
 
 def ff_calculations(pk):
     cur_year = Year.objects.get(id=pk)
@@ -46,7 +84,7 @@ def ff_calculations(pk):
 
 
     if opstmt.pbd_it > 0:
-        ff.net_profit_after_tax = opstmt.pbd_it
+        ff.net_profit_after_tax = opstmt.net_profit_after_tax_loss
     else:
         ff.net_profit_after_tax = 0
     ff.depreciation = asst_and_liab.lessDepreciation - prev_asst_and_liab.lessDepreciation
@@ -114,7 +152,8 @@ def ff_calculations(pk):
     ff.long_term_sources = ff.total_long_term_sources
     ff.long_term_uses = ff.total_long_term_uses
     ff.surplus_deficit = ff.long_term_sources - ff.long_term_uses
-    ff.long_term_uses_vs_sources = ff.long_term_uses / ff.long_term_sources
+    if ff.long_term_sources > 0:
+        ff.long_term_uses_vs_sources = ff.long_term_uses / ff.long_term_sources
 
     # Building Up of NWC (Net Working Capital) - Sources
 
@@ -201,3 +240,4 @@ def ff_calculations(pk):
     ff.term_loan = asst_and_liab.termLoanIob + asst_and_liab.termLoanOtherBanks + asst_and_liab.termLoanInstitution
     # ff.increase_in_term_loan_final =
     # ff.decrease_in_term_loan_final =
+    ff.save()

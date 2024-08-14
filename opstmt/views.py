@@ -30,8 +30,11 @@ class CreateCompanyView(APIView):
             OcaOcl.objects.create(year=year)
             Ratios.objects.create(year=year)
             WcTl.objects.create(year=year)
+            print(year)
             KFI.objects.create(year=year)
-            FF.objects.create(year=year)
+            if year.year != 2020:
+                c=FF.objects.create(year=year)
+                print(c.year)
 
         return Response(CompanySerializer(company).data, status=status.HTTP_201_CREATED)
 
