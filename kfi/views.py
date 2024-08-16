@@ -14,8 +14,6 @@ from opstmt.models import Year, Company, Opstmt
 from .serializers import KfiSerializer, CompanyKfiSerializer
 
 
-# from rest_framework.permissions import IsAuthenticated
-
 # Create your views here.
 class GetKFIView(APIView):
     def get(self, request, company_id):

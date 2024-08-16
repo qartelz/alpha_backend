@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import AssetnLiabs
 from opstmt.models import Year, Company, Opstmt
-# from ocaocl.models import OcaOcl
+from ocaocl.models import OcaOcl
 from .serializers import AssetnLiabsSerializer, CompanyAssetnLiabsSerializer
 
 from rest_framework.permissions import IsAuthenticated
@@ -68,14 +68,14 @@ def assetnliabscalculation(year_id):
     year = Year.objects.get(id=year_id)
     opstmt = Opstmt.objects.get(year=year)
     asset_liab = AssetnLiabs.objects.get(year=year)
-    # ocacl = OcaOcl.objects.get(year=year)
+    ocacl = OcaOcl.objects.get(year=year)
 
     asset_liab.closingStockRM = opstmt.closing_stock_rm
     asset_liab.closingStockWIP = opstmt.closing_stock_wip
     asset_liab.closingStockFinishedGoods = opstmt.closing_stock_finished_goods
-    # asset_liab.otherNonCurrentAssets = ocacl.totalNonCurrentAssets
+    asset_liab.otherNonCurrentAssets = ocacl.totalNonCurrentAssets
     asset_liab.totalNca = asset_liab.otherNonCurrentAssets + asset_liab.investmtLoanToAssociate
-    # asset_liab.otherLongTermLiab = ocacl.totalOtherTermLiabilities
+    asset_liab.otherLongTermLiab = ocacl.totalOtherTermLiabilities
     asset_liab.totalCurrentAssets = asset_liab.closingStockRM + asset_liab.closingStockWIP + asset_liab.closingStockFinishedGoods + asset_liab.consumableSpares + asset_liab.tradeDebtors6 + asset_liab.otherCurrentAssets
     asset_liab.save()
 
