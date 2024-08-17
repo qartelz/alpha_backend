@@ -12,7 +12,8 @@ from ocaocl.models import OcaOcl
 from wctl.models import WcTl
 from opstmt.models import Year, Company, Opstmt
 from .serializers import KfiSerializer, CompanyKfiSerializer
-
+from wctl.views import wl_tl_assmt_calculations
+from ratios.views import calculate_ratios
 
 # Create your views here.
 class GetKFIView(APIView):
@@ -20,6 +21,8 @@ class GetKFIView(APIView):
         company = Company.objects.get(id=company_id)
         years = company.years.all()
         for year in years:
+            calculate_ratios(year.id)
+            wl_tl_assmt_calculations(year.id)
             kfi_calculations(year.id)
         return Response(CompanyKfiSerializer(years, many=True).data)
 
@@ -76,7 +79,7 @@ def kfi_calculations(pk):
     kfi.percent_rise_fall_in_sales = ratios.percent_rise_ans_fall_in_sales
     kfi.operating_profit = opstmt.operating_profit_loss
     kfi.net_profit_after_tax = ratios.NET_PROFIT
-    kfi.cash_accruals = ratios.cash_accruals
+    kfi.cash_accruals = opstmt.cash_accruals
     kfi.net_working_capital = ratios.net_working_capital
     kfi.current_ratio = ratios.current_ratio
     kfi.tnw = ratios.tangible_net_worth

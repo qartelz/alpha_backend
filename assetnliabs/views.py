@@ -9,7 +9,10 @@ from .models import AssetnLiabs
 from opstmt.models import Year, Company, Opstmt
 from ocaocl.models import OcaOcl
 from .serializers import AssetnLiabsSerializer, CompanyAssetnLiabsSerializer
-
+from ratios.views import calculate_ratios
+from wctl.views import wl_tl_assmt_calculations
+from kfi.views import kfi_calculations
+from ff.views import ff_calculations
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -56,6 +59,9 @@ class UpdateAssetnLiabsView(APIView):
             serializer = AssetnLiabsSerializer(assetnliabs, data=assetnliabs_data)
             if serializer.is_valid():
                 serializer.save()
+                calculate_ratios(year.id)
+                wl_tl_assmt_calculations(year.id)
+                kfi_calculations(year.id)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

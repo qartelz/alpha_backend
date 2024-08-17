@@ -14,6 +14,10 @@ from kfi.models import KFI
 from ff.models import FF
 from .models import Student, Year, Company, Opstmt
 from .serializers import CompanySerializer, CompanyOpstmtSerializer, OpstmtSerializer, UserLoginSerializer
+from ratios.views import calculate_ratios
+from wctl.views import wl_tl_assmt_calculations
+from kfi.views import kfi_calculations
+from assetnliabs.views import assetnliabscalculation
 
 # Create your views here.
 class CreateCompanyView(APIView):
@@ -32,7 +36,7 @@ class CreateCompanyView(APIView):
             WcTl.objects.create(year=year)
             KFI.objects.create(year=year)
             if year.year != 2020:
-                c=FF.objects.create(year=year)
+                FF.objects.create(year=year)
 
         return Response(CompanySerializer(company).data, status=status.HTTP_201_CREATED)
 
@@ -94,6 +98,10 @@ class UpdateCompaniesOpstmtView(APIView):
             serializer = OpstmtSerializer(opstmt, data=opstmt_data)
             if serializer.is_valid():
                 serializer.save()
+                assetnliabscalculation(year.id)
+                calculate_ratios(year.id)
+                wl_tl_assmt_calculations(year.id)
+                kfi_calculations(year.id)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

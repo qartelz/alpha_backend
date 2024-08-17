@@ -11,7 +11,7 @@ from ocaocl.models import OcaOcl
 from wctl.models import WcTl
 from opstmt.models import Year, Company, Opstmt
 from .serializers import WctlSerializer, CompanyWcTlSerializer
-
+from ratios.views import calculate_ratios
 
 # from rest_framework.permissions import IsAuthenticated
 # Create your views here.
@@ -20,6 +20,7 @@ class GetWcTlView(APIView):
         company = Company.objects.get(id=token_id)
         years = company.years.all()
         for year in years:
+            calculate_ratios(year.id)
             wl_tl_assmt_calculations(year.id)
         return Response(CompanyWcTlSerializer(years, many=True).data)
 
