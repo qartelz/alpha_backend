@@ -1,9 +1,46 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.contrib.auth.models import AbstractUser
+
+
+class CustomUser(AbstractUser):
+    # Additional fields for your custom user model
+    
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',  # Change the related_name to avoid clashes
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        verbose_name='groups',
+    )
+    
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',  # Change the related_name to avoid clashes
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
+
+    USER_TYPE_CHOICES = (
+        ('college', 'College'),
+        ('student', 'Student'),
+    )
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+
+class College(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='college_profile')
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.user.username
+    
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
+    college = models.ForeignKey(College, on_delete=models.CASCADE, related_name='students',  null=True, blank=True)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.user.username
