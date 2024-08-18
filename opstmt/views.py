@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from assetnliabs.models import AssetnLiabs
 from ocaocl.models import OcaOcl
 from ratios.models import Ratios
+from rest_framework.permissions import AllowAny
 from wctl.models import WcTl
 from kfi.models import KFI
 from ff.models import FF
@@ -42,6 +43,8 @@ class CreateCompanyView(APIView):
 
 
 class UserLoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
