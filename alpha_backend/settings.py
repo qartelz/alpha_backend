@@ -134,9 +134,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CSRF_TRUSTED_ORIGINS = [
+    'https://qartelzbeezalpha.com',
+    "http://localhost:3000",
+
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:3000",
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://qartelzbeezalpha.com',
     "http://localhost:3000",
 ]
 

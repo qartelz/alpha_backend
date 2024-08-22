@@ -23,8 +23,8 @@ from assetnliabs.views import assetnliabscalculation
 # Create your views here.
 class CreateCompanyView(APIView):
     # permission_classes = [IsAuthenticated]
-    def post(self, request):
-        student = Student.objects.get(id=1)
+    def post(self, request, user_id):
+        student = Student.objects.get(user_id=user_id)
         company_name = request.data.get('company_name')
 
         company = Company.objects.create(student=student, name=company_name)
@@ -53,9 +53,24 @@ class UserLoginView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'user_id': user.id, 
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class GetlatestCompanyView(APIView):
+    def get(self, request, user_id):
+        student = Student.objects.get(user_id=user_id)
+        print(student.id, user_id)
+
+        try:
+            latest_company = student.company.latest('created_at')
+            serializer = CompanySerializer(latest_company)
+            return Response(serializer.data)
+        except Company.DoesNotExist:
+            return Response({'error': 'No company found for this student'}, status=404)
+    
 
 class GetCompaniesOpstmtView(APIView):
     def get(self, request, company_id):

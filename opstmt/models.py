@@ -52,7 +52,7 @@ class Company(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Token for {self.student.user.username} with {self.num_companies} companies in {self.year}"
+        return f"Token for {self.student.user.username} with "
 
 
 class Year(models.Model):
