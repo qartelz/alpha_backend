@@ -5,7 +5,7 @@ from .models import Company, Opstmt, Year
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['student','id']
+        fields = ['student','id', 'name']
 
 class OpstmtSerializer(serializers.ModelSerializer):
     netSales = serializers.FloatField(source='net_sales', required=False, default=0)
