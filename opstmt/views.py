@@ -62,7 +62,6 @@ class UserLoginView(APIView):
 class GetlatestCompanyView(APIView):
     def get(self, request, user_id):
         student = Student.objects.get(user_id=user_id)
-        print(student.id, user_id)
 
         try:
             latest_company = student.company.latest('created_at')
